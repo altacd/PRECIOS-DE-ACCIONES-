@@ -35,3 +35,7 @@ bash
 Copiar
 Editar
 Pogramacion_Concurrente.py
+
+LINK DEL VIDEO EN YOUTUBE:
+https://www.youtube.com/watch?v=GuuIJccN21w
+
