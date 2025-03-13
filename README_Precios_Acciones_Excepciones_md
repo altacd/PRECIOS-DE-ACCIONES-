@@ -1,0 +1,94 @@
+# 📈 Seguimiento de Precios de Acciones en Tiempo Real con Manejo de Excepciones
+
+Este proyecto en Python obtiene los precios en tiempo real de una lista de acciones utilizando la librería `yfinance`. Además, implementa **manejo de excepciones** para evitar que errores inesperados interrumpan la ejecución del programa.
+
+## 📌 Descripción del Problema
+
+Al trabajar con datos financieros en tiempo real, pueden ocurrir problemas como:
+- Acciones inexistentes o eliminadas del mercado.
+- Falta de conexión a internet o problemas en la API de Yahoo Finance.
+- Datos incompletos o vacíos en la respuesta.
+
+Para evitar que estos problemas afecten la ejecución del programa, se implementan **excepciones** para manejar errores de manera eficiente.
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Python 3.x**
+- **Librerías**:  
+  - `yfinance`: Para obtener los datos de las acciones.  
+  - `time`: Para manejar pausas entre actualizaciones.  
+
+## 🔍 Funcionamiento del Programa
+
+1. Se define una función `obtener_precio(acciones)` que consulta el precio de cada acción en la lista proporcionada.  
+2. Cada 10 segundos, se actualizan y muestran los precios.  
+3. Se implementan **múltiples excepciones** para manejar errores como:  
+   - Acciones sin datos (`ValueError`).  
+   - Errores al acceder a la información (`KeyError`).  
+   - Cualquier otro error inesperado (`Exception`).  
+4. El programa sigue ejecutándose sin interrupciones, incluso si alguna acción no tiene datos.
+
+## 📜 Código Principal
+
+```python
+import yfinance as yf
+import time
+
+def obtener_precio(acciones):
+    while True:
+        print("\nActualización de precios de acciones:")
+        for accion in acciones:
+            try:
+                stock = yf.Ticker(accion)
+                historial = stock.history(period='1d')
+
+                # Verificar si el historial tiene datos
+                if historial.empty:
+                    raise ValueError(f"No se encontraron datos para la acción {accion}")
+
+                precio = historial.iloc[-1]['Close']
+                print(f"{accion}: ${precio:.2f}")
+
+            except ValueError as ve:
+                print(f"Error de valor: {ve}")
+            except KeyError:
+                print(f"Error al acceder a los datos de {accion}.")
+            except Exception as e:
+                print(f"Error inesperado al obtener {accion}: {e}")
+
+        time.sleep(10)  # Espera 10 segundos antes de actualizar
+
+if __name__ == "__main__":
+    lista_acciones = ["AAPL", "GOOGL", "MSFT", "AMZN", "XXXX"]  # "XXXX" es una acción inválida para probar excepciones
+    obtener_precio(lista_acciones)
+🚀 Ejecución del Programa
+Instalar dependencias (si aún no las tienes instaladas):
+bash
+Copiar
+Editar
+pip install yfinance
+Ejecutar el programa en la terminal o en un entorno Python:
+bash
+Copiar
+Editar
+python nombre_del_archivo.py
+🛡️ Manejo de Excepciones
+El programa maneja los siguientes errores:
+
+Excepción	Causa	Acción Tomada
+ValueError	Datos de la acción vacíos o no disponibles	Muestra un mensaje informativo
+KeyError	No se encuentra la clave 'Close' en la respuesta	Informa que hubo un problema con la API
+Exception	Cualquier otro error inesperado	Captura y muestra el error sin detener el programa
+🎯 Ejemplo de Salida
+plaintext
+Copiar
+Editar
+Actualización de precios de acciones:
+AAPL: $210.88
+GOOGL: $162.45
+MSFT: $378.24
+AMZN: $192.18
+XXXX: possibly delisted; no price data found  (period=1d)
+Error de valor: No se encontraron datos para la acción XXXX
+📌 Conclusión
+Este programa es una excelente demostración del uso de hilos, manejo de excepciones y actualización en tiempo real. Se pueden agregar más funcionalidades, como gráficos de tendencias o notificaciones, para hacerlo aún más útil en aplicaciones de análisis financiero.
